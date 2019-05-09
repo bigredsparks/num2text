@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public class Num2TextGeneratorImpl implements Num2TextGenerator {
 
     // pattern for matching the input number
-    Pattern pattern = Pattern.compile("^-?\\d+$");
+    Pattern pattern = Pattern.compile("^-?\\d{1,10}$");
 
     public String generateText( String numStr ) {
 
@@ -30,7 +30,7 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
         // is number negative?
         if (number < 0) {
             // yes, preprend output with negative
-            textBuilder.append("negative ");
+            textBuilder.append("Negative ");
 
             // negate input number
             number = -number;
@@ -81,8 +81,11 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
         // was any text generated?
         if (text.length() == 0) {
             // no, return zero
-            return "zero";
+            return "Zero";
         }
+
+        // capitalize first letter
+        text = String.format("%c%s", Character.toUpperCase(text.charAt(0)), text.substring(1));
 
         // return generated text
         return text;

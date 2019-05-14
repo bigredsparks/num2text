@@ -13,6 +13,8 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
 
     public String generateText( String numStr ) {
 
+        boolean isNegative = false;
+
         // validate input number
         if (!validateInput(numStr)) {
             return "Error: Invalid input.";
@@ -23,13 +25,17 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
             return "Error: Number out of range.";
         }
 
+        // create a string builder to create the text response
         StringBuilder textBuilder = new StringBuilder();
 
+        // is input negative number?
         if (numStr.startsWith("-")) {
-            textBuilder.append("Negative ");
+            // yes, trim the negative from the start of input
             numStr = numStr.substring(1);
+            isNegative = true;
         }
 
+        // convert the input number string to a structure number
         StructuredNumber strNum = StructuredNumber.fromInput(numStr);
 
         // convert billions
@@ -74,10 +80,16 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
         // get the text from the builder and trim
         String text = textBuilder.toString().trim();
 
-        // was any text generated?
-        if (text.length() == 0 || text.equals("Negative")) {
+        // was any text generated
+        if (text.length() == 0) {
             // no, return zero
             return "Zero";
+        }
+
+        // was input negative?
+        if (isNegative) {
+            // yes, prepend "Negative" to output
+            text = "Negative " + text;
         }
 
         // capitalize first letter

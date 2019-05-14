@@ -1,5 +1,8 @@
 package com.sonatype.num2text.services;
 
+/**
+ * converts an input number string to a set of hundreds, thousands, millions and billions
+ */
 public class StructuredNumber {
 
     private String billions = "";
@@ -9,13 +12,20 @@ public class StructuredNumber {
 
     private StructuredNumber() {}
 
+    /**
+     * generates a structure number from an input string of digits
+     * @param input
+     * @return
+     */
     public static StructuredNumber fromInput(String input) {
         StructuredNumber strInput = new StructuredNumber();
 
+        // reverse the order of the digits
         StringBuilder builder = new StringBuilder(input);
         builder.reverse();
         String revInput = builder.toString();
 
+        // iterate through each digit and separate into sets of hundreds, thousands, ...
         for (int i = 0; i < revInput.length(); i++) {
             char x = revInput.charAt(i);
             if (i > 8) {

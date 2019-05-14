@@ -1,4 +1,4 @@
-package com.sonatype.num2text;
+package com.sonatype.num2text.services;
 
 import com.sonatype.num2text.services.Num2TextGeneratorImpl;
 import org.junit.Test;
@@ -55,6 +55,7 @@ public class Num2TextGenerateTests {
     public void testThreeDigitGeneration() {
         Num2TextGeneratorImpl generator = new Num2TextGeneratorImpl();
         assertThat(generator.generateText("100"), equalTo("One hundred"));
+
     }
 
     @Test
@@ -70,6 +71,7 @@ public class Num2TextGenerateTests {
         assertThat(generator.generateText("17"), equalTo("Seventeen"));
         assertThat(generator.generateText("18"), equalTo("Eighteen"));
         assertThat(generator.generateText("19"), equalTo("Nineteen"));
+
     }
 
     @Test
@@ -106,6 +108,7 @@ public class Num2TextGenerateTests {
         assertThat(generator.generateText("-100000"), equalTo("Negative one hundred thousand"));
         assertThat(generator.generateText("-1000000"), equalTo("Negative one million"));
         assertThat(generator.generateText("-10000000"), equalTo("Negative ten million"));
+
     }
 
     @Test
@@ -118,16 +121,17 @@ public class Num2TextGenerateTests {
         // length validation
         assertThat(generator.generateText("10000000000"), startsWith("Error"));
         assertThat(generator.generateText("-10000000000"), startsWith("Error"));
+
     }
 
     @Test
     public void testRangeValidation() {
         Num2TextGeneratorImpl generator = new Num2TextGeneratorImpl();
         assertThat(generator.generateText("2147483648"), startsWith("Error"));
-        assertThat(generator.generateText("2147483647"), not(startsWith("Error")));
+        assertThat(generator.generateText("2147483647"), equalTo("Two billion one hundred forty seven million four hundred eighty three thousand six hundred forty seven"));
 
         assertThat(generator.generateText("-2147483649"), startsWith("Error"));
-        assertThat(generator.generateText("-2147483648"), not(startsWith("Error")));
+        assertThat(generator.generateText("-2147483648"), equalTo("Negative two billion one hundred forty seven million four hundred eighty three thousand six hundred forty eight"));
     }
 
 }

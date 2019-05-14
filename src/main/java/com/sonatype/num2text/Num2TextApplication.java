@@ -27,7 +27,7 @@ public class Num2TextApplication implements CommandLineRunner {
 		if (args.length > 0) {
 			// iterate over each input argument and attempt to convert each
 			for (String arg : args) {
-				System.out.println(num2TextGenerator.generateText(arg));
+                System.out.println(num2TextGenerator.generateText(arg));
 			}
 		}
 		else {

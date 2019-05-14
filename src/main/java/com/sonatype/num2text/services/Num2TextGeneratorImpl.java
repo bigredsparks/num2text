@@ -13,82 +13,87 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
 
     public String generateText( String numStr ) {
 
-        // validate input number
-        if (!validateInput(numStr)) {
-            return "Error: Invalid input.";
+        try {
+            // validate input number
+            if (!validateInput(numStr)) {
+                return "Error: Invalid input.";
+            }
+
+            // validate range of input number
+            if (!validateRange(numStr)) {
+                return "Error: Number out of range.";
+            }
+
+            // convert input to integer
+            long number = Long.parseLong(numStr);
+            StringBuilder textBuilder = new StringBuilder();
+
+            // is number negative?
+            if (number < 0) {
+                // yes, preprend output with negative
+                textBuilder.append("Negative ");
+
+                // negate input number
+                number = -number;
+            }
+
+            // convert billions
+
+            // get 1st billions digits only
+            int billions = getDigits(number, 0, 9);
+            if (billions != 0) {
+                // convert the billions digits to text
+                textBuilder.append(convertThreeDigits(billions));
+                textBuilder.append(" billion ");
+            }
+
+            // get millons
+
+            // get 3 millions digits
+            int millions = getDigits(number, 9, 6);
+            if (millions != 0) {
+                // convert the millions digits to text
+                textBuilder.append(convertThreeDigits(millions));
+                textBuilder.append(" million ");
+            }
+
+            // get thousands
+
+            // get 3 thousands digits
+            int thousands = getDigits(number, 6, 3);
+            if (thousands != 0) {
+                // convert the thousands digits to text
+                textBuilder.append(convertThreeDigits(thousands));
+                textBuilder.append(" thousand ");
+            }
+
+            // get hundreds
+
+            // get 3 hundreds digits
+            int hundreds = getDigits(number, 3, 0);
+            if (hundreds != 0) {
+                // convert the hundreds digits to text
+                textBuilder.append(convertThreeDigits(hundreds));
+            }
+
+            // get the text from the builder and trim
+            String text = textBuilder.toString().trim();
+
+            // was any text generated?
+            if (text.length() == 0) {
+                // no, return zero
+                return "Zero";
+            }
+
+            // capitalize first letter
+            text = String.format("%c%s", Character.toUpperCase(text.charAt(0)), text.substring(1));
+
+            // return generated text
+            return text;
         }
-
-        // validate range of input number
-        if (!validateRange(numStr)) {
-            return "Error: Number out of range.";
+        catch (Exception ex) {
+            return "Error: Unexpected error";
         }
-
-        // convert input to integer
-        Integer number = Integer.parseInt(numStr);
-        StringBuilder textBuilder = new StringBuilder();
-
-        // is number negative?
-        if (number < 0) {
-            // yes, preprend output with negative
-            textBuilder.append("Negative ");
-
-            // negate input number
-            number = -number;
-        }
-
-        // convert billions
-
-        // get 3 billions digits
-        int billions = getDigits(number, 0, 9);
-        if (billions != 0) {
-            // convert the billions digits to text
-            textBuilder.append(convertThreeDigits(billions));
-            textBuilder.append(" billion ");
-        }
-
-        // get millons
-
-        // get 3 millions digits
-        int millions = getDigits(number, 9, 6);
-        if (millions != 0) {
-            // convert the millions digits to text
-            textBuilder.append(convertThreeDigits(millions));
-            textBuilder.append(" million ");
-        }
-
-        // get thousands
-
-        // get 3 thousands digits
-        int thousands = getDigits(number, 6, 3);
-        if (thousands != 0) {
-            // convert the thousands digits to text
-            textBuilder.append(convertThreeDigits(thousands));
-            textBuilder.append(" thousand ");
-        }
-
-        // get hundreds
-
-        // get 3 hundreds digits
-        int hundreds = getDigits(number, 3, 0);
-        if (hundreds != 0) {
-            // convert the hundreds digits to text
-            textBuilder.append(convertThreeDigits(hundreds));
-        }
-
-        // get the text from the builder and trim
-        String text = textBuilder.toString().trim();
-
-        // was any text generated?
-        if (text.length() == 0) {
-            // no, return zero
-            return "Zero";
-        }
-
-        // capitalize first letter
-        text = String.format("%c%s", Character.toUpperCase(text.charAt(0)), text.substring(1));
-
-        // return generated text
-        return text;
     }
 
     /**
@@ -117,7 +122,7 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
      * @param threeDigits - three input digits
      * @return - text equivalent
      */
-    private String convertThreeDigits( int threeDigits ) {
+    private String convertThreeDigits(int threeDigits ) {
         StringBuilder textBuilder = new StringBuilder();
 
         // isolate the hundreds digit
@@ -158,7 +163,9 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
      * @return - tens digit converted to text
      */
     private String convertTensDigit(int tensDigit) {
+
         switch (tensDigit) {
+            case 0: return "";
             case 2: return "twenty";
             case 3: return "thirty";
             case 4: return "forty";
@@ -168,7 +175,7 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
             case 8: return "eighty";
             case 9: return "ninety";
         }
-        return "";
+        throw new RuntimeException(String.format("Unexpected tens digit: %d", tensDigit));
     }
 
     /**
@@ -191,7 +198,8 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
             case 9: return "nine";
         }
 
-        return "";
+        throw new RuntimeException(String.format("Unexpected single digit: %d", singleDigit));
+
     }
 
     /**
@@ -213,7 +221,7 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
             case 19: return "nineteen";
         }
 
-        return "";
+        throw new RuntimeException(String.format("Unexpected teens value: %d", teens));
     }
 
     /**
@@ -224,9 +232,9 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
      * @param endExp - position where to end extracting digits
      * @return - the extracted numbers requested
      */
-    private int getDigits(int num, int startExp, int endExp) {
+    private int getDigits(Long num, int startExp, int endExp) {
 
-        int val = num;
+        long val = num;
 
         if (startExp > 0) {
             // get the starting point - 10 to the power of start
@@ -242,6 +250,6 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
         // trim trailing digits - integer division of end
         val = val / end;
 
-        return val;
+        return (int) val;
     }
 }

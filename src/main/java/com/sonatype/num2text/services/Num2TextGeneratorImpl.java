@@ -23,23 +23,19 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
             return "Error: Number out of range.";
         }
 
-        // convert input to integer
-        Integer number = Integer.parseInt(numStr);
         StringBuilder textBuilder = new StringBuilder();
 
-        // is number negative?
-        if (number < 0) {
-            // yes, preprend output with negative
+        if (numStr.startsWith("-")) {
             textBuilder.append("Negative ");
-
-            // negate input number
-            number = -number;
+            numStr = numStr.substring(1);
         }
+
+        StructuredNumber strNum = StructuredNumber.fromInput(numStr);
 
         // convert billions
 
         // get 3 billions digits
-        int billions = getDigits(number, 0, 9);
+        int billions = strNum.getBillionsAsInt();
         if (billions != 0) {
             // convert the billions digits to text
             textBuilder.append(convertThreeDigits(billions));
@@ -49,7 +45,7 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
         // get millons
 
         // get 3 millions digits
-        int millions = getDigits(number, 9, 6);
+        int millions = strNum.getMillionsAsInt();
         if (millions != 0) {
             // convert the millions digits to text
             textBuilder.append(convertThreeDigits(millions));
@@ -59,7 +55,7 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
         // get thousands
 
         // get 3 thousands digits
-        int thousands = getDigits(number, 6, 3);
+        int thousands = strNum.getThousandsAsInt();
         if (thousands != 0) {
             // convert the thousands digits to text
             textBuilder.append(convertThreeDigits(thousands));
@@ -69,7 +65,7 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
         // get hundreds
 
         // get 3 hundreds digits
-        int hundreds = getDigits(number, 3, 0);
+        int hundreds = strNum.getHundredsAsInt();
         if (hundreds != 0) {
             // convert the hundreds digits to text
             textBuilder.append(convertThreeDigits(hundreds));
@@ -79,7 +75,7 @@ public class Num2TextGeneratorImpl implements Num2TextGenerator {
         String text = textBuilder.toString().trim();
 
         // was any text generated?
-        if (text.length() == 0) {
+        if (text.length() == 0 || text.equals("Negative")) {
             // no, return zero
             return "Zero";
         }

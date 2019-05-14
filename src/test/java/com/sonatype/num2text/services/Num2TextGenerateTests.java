@@ -1,6 +1,5 @@
-package com.sonatype.num2text;
+package com.sonatype.num2text.services;
 
-import com.sonatype.num2text.services.Num2TextGeneratorImpl;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -9,8 +8,8 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.Matchers.not;
 
 public class Num2TextGenerateTests {
-
     @Test
+
     public void testSingleDigitGeneration() {
         Num2TextGeneratorImpl generator = new Num2TextGeneratorImpl();
         assertThat(generator.generateText("0"), equalTo("Zero"));
